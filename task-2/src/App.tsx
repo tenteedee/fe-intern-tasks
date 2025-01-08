@@ -22,8 +22,23 @@ const Post2 = () => {
 
 function App() {
   // const [login, setLogin] = useState(!!localStorage.getItem('accessToken'));
-  const [user] = useAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
   const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    const storedUser = localStorage.getItem('user');
+
+    if (accessToken && storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setIsLoggedIn(true);
+        setUser(parsedUser);
+      } catch (error) {
+        console.warn('Failed to parse user from localStorage:', error);
+      }
+    }
+  }, [setIsLoggedIn, setUser]);
 
   useEffect(() => {
     axiosInstant.get('/posts?page=1');

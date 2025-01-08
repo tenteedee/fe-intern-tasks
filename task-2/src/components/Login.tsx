@@ -6,21 +6,7 @@ import { useAtom } from 'jotai';
 const Login = () => {
   const [user, setUser] = useAtom(userAtom);
   const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
-  const [username, setUsername] = useState('');
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        if (parsedUser?.username) {
-          setUsername(parsedUser.username);
-        }
-      } catch (error) {
-        console.warn('Failed to parse user from localStorage:', error);
-      }
-    }
-  }, []);
+  const [username, setUsername] = useState('adminRefresh2');
 
   const onLogin = async () => {
     if (!username) {
