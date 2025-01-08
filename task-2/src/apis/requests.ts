@@ -12,7 +12,6 @@ export const axiosInstant = axios.create({
 axiosInstant.interceptors.request.use(
   async (config: any) => {
     const accessToken = localStorage.getItem('accessToken');
-    console.log(accessToken);
 
     // config.headers = {
     //   Authorization: `Bearer ${accessToken}`,

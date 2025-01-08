@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import { VITE_APP_API, axiosInstant } from './apis/requests';
+import { useAtom } from 'jotai';
+import { isLoggedInAtom, userAtom } from './atoms/atoms';
+import Login from './components/Login';
 
 const Post1 = () => {
   useEffect(() => {
@@ -18,45 +21,13 @@ const Post2 = () => {
 };
 
 function App() {
-  const [login, setLogin] = useState(!!localStorage.getItem('accessToken'));
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const token = localStorage.getItem('accessToken');
-  //     setLogin(!!token);
-  //   }, 1000); // Kiểm tra mỗi giây (hoặc tăng thời gian nếu cần)
-
-  //   return () => clearInterval(interval); // Dọn dẹp khi component unmount
-  // }, []);
-  useEffect(() => {
-    setLogin(!!localStorage.getItem('accessToken'));
-  }, []);
+  // const [login, setLogin] = useState(!!localStorage.getItem('accessToken'));
+  const [user] = useAtom(userAtom);
+  const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
 
   useEffect(() => {
     axiosInstant.get('/posts?page=1');
   }, []);
-
-  const onLogin = async () => {
-    // const r = await fetch(`${VITE_APP_API}/auth/login`, {
-    //   method: 'post',
-    //   body: JSON.stringify({
-    //     username: 'adminRefresh2',
-    //   }),
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // }).then((r) => r.json());
-    const response = await axiosInstant.post(`${VITE_APP_API}/auth/login`, {
-      username: 'adminRefresh2',
-    });
-    const user = response.data;
-
-    if (user?.accessToken) {
-      localStorage.setItem('accessToken', user?.accessToken);
-      localStorage.setItem('refreshToken', user?.refreshToken);
-      setLogin(true);
-    }
-  };
 
   return (
     <div className='App'>
@@ -66,13 +37,14 @@ function App() {
       <br />
 
       <div>
-        {login ? (
+        {isLoggedIn ? (
           <>
+            <h3>Welcome! {user?.username}</h3>
             <button
               onClick={() => {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
-                setLogin(false);
+                setIsLoggedIn(false);
               }}
             >
               Logout
@@ -80,7 +52,7 @@ function App() {
             <p>Token will expire after 1m. Please check network</p>
           </>
         ) : (
-          <button onClick={onLogin}>Login</button>
+          <Login />
         )}
       </div>
     </div>
