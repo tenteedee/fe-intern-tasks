@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import { Service } from '../types/service';
+import React, { useState, useRef } from 'react';
 import { Button } from 'antd';
-import ServiceBlock from '../component/ServiceBlock';
-import AddEditServiceModal from '../component/AddEditServiceModal';
+import { Service } from '../types/service';
+import ServiceBlock from '../components/ServiceBlock';
+import AddEditServiceModal from '../components/AddEditServiceModal';
 
 const ServicesPage: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [editingService, setEditingService] = useState<Service | undefined>(
-    undefined
-  );
+
+  const modalRef = useRef<{
+    open: (service?: Service) => void;
+    close: () => void;
+  }>(null);
 
   const handleSaveService = (service: Service) => {
     setServices((prev) => {
       const index = prev.findIndex((s) => s.key === service.key);
-      // ì found existing service, update
       if (index >= 0) {
         const newArr = [...prev];
         newArr[index] = service;
@@ -23,8 +23,7 @@ const ServicesPage: React.FC = () => {
         return [...prev, service];
       }
     });
-    setIsModalVisible(false);
-    setEditingService(undefined);
+    modalRef.current?.close();
   };
 
   const handleRemoveService = (key: number) => {
@@ -32,13 +31,11 @@ const ServicesPage: React.FC = () => {
   };
 
   const handleAddService = () => {
-    setEditingService(undefined);
-    setIsModalVisible(true);
+    modalRef.current?.open();
   };
 
   const handleEditService = (service: Service) => {
-    setEditingService(service);
-    setIsModalVisible(true);
+    modalRef.current?.open(service);
   };
 
   const handleSubmitAll = () => {
@@ -75,16 +72,9 @@ const ServicesPage: React.FC = () => {
         </Button>
       </div>
 
-      <AddEditServiceModal
-        visible={isModalVisible}
-        onClose={() => {
-          setIsModalVisible(false);
-          setEditingService(undefined);
-        }}
-        onSave={handleSaveService}
-        editingService={editingService}
-      />
+      <AddEditServiceModal ref={modalRef} onSave={handleSaveService} />
     </div>
   );
 };
+
 export default ServicesPage;
