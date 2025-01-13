@@ -1,0 +1,22 @@
+{
+  "login": "Đăng nhập",
+  "logout": "Đăng xuất",
+  "username": "Tên đăng nhập",
+  "post-title": "Danh sách bài viết",
+  "title": "Tiêu đề",
+  "description": "Mô tả",
+  "tags": "Nhãn",
+  "action": "Thao tác",
+  "edit": "Thay đổi",
+  "delete": "Xóa",
+  "cancel": "Hủy",
+  "add": "Thêm bài viết",
+  "post-updated-successfully": "Bài viết đã được cập nhật thành công",
+  "post-added-successfully": "Bài viết đã được thêm thành công",
+  "failed-to-save-post": "Không thể lưu bài viết",
+  "post-deleted-successfully": "Bài viết đã được xóa thành công",
+  "failed-to-delete-post": "Không thể xóa bài viết",
+  "error-loading-posts": "Lỗi khi tải bài viết",
+  "unknown-error": "Lỗi không xác định",
+  "id": "ID"
+}

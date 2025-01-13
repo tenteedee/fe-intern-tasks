@@ -49,15 +49,7 @@ const PostModal = forwardRef((props: PostModalProps, ref) => {
     const fetchTags = async () => {
       try {
         const response = await axios.get('/posts/tags');
-        console.log('Tags API Response:', response.data);
-        if (
-          Array.isArray(response.data) &&
-          response.data.every((tag) => typeof tag === 'string')
-        ) {
-          setAvailableTags(response.data);
-        } else {
-          throw new Error('Invalid data format');
-        }
+        setAvailableTags(response.data);
       } catch (error) {
         message.error('Failed to fetch tags');
       }

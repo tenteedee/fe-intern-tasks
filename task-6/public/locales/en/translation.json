@@ -1,0 +1,14 @@
+{
+  "login": "Login",
+  "logout": "Logout",
+  "username": "Username",
+  "post-title": "Posts",
+  "title": "Title",
+  "description": "Description",
+  "tags": "Tags",
+  "action": "Action",
+  "edit": "Edit",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "add": "Add Post"
+}
