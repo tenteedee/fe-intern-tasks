@@ -1,6 +1,6 @@
 import { useEffect, useImperativeHandle, useState, forwardRef } from 'react';
 import { Form, Input, Modal, Checkbox, message } from 'antd';
-import axios from 'axios';
+import axios from './../../utils/axios';
 
 interface Post {
   id?: string;
