@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
 import { useNavigate } from 'react-router-dom';
 import { userAtom } from '../../atoms/userAtom';
 import { useRequest } from 'ahooks';
-import { Table, Button } from 'antd';
+import { Table, Button, message } from 'antd';
 import { User } from 'lucide-react';
-import { fetchPosts } from './requests';
+import { fetchPosts, addPost, editPost, deletePost } from './requests';
 import { Post } from '../../types/Post';
+import PostModal from './PostModal';
 
 const PostPage: React.FC = () => {
   const [user, setUser] = useAtom(userAtom);
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  const modalRef = useRef<{
+    open: (post?: Post) => void;
+    close: () => void;
+  } | null>(null);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -22,7 +27,12 @@ const PostPage: React.FC = () => {
     }
   }, [setUser, navigate]);
 
-  const { data, error, loading } = useRequest(() => fetchPosts(page), {
+  const {
+    data,
+    error,
+    loading,
+    run: reloadPosts,
+  } = useRequest(() => fetchPosts(page), {
     refreshDeps: [page],
   });
 
@@ -34,14 +44,38 @@ const PostPage: React.FC = () => {
     navigate('/login');
   };
 
-  const handleEdit = (record: Post) => {
-    console.log('Edit:', record);
-    // TODO: modal edit
+  const handleSave = async (post: Post) => {
+    try {
+      if (post.id) {
+        await editPost(post.id, post);
+        message.success('Post updated successfully');
+      } else {
+        await addPost(post);
+        message.success('Post added successfully');
+      }
+      reloadPosts();
+    } catch (error) {
+      message.error('Failed to save post');
+    }
   };
 
-  const handleDelete = (record: Post) => {
-    console.log('Delete:', record);
-    // TODO: delete post
+  const handleEdit = (record: Post) => {
+    if (modalRef.current) {
+      modalRef.current.open(record);
+    }
+  };
+
+  const handleDelete = async (post: Post) => {
+    try {
+      if (!post.id) {
+        return;
+      }
+      await deletePost(post.id);
+      message.success('Post deleted successfully');
+      reloadPosts();
+    } catch (error) {
+      message.error('Failed to delete post');
+    }
   };
 
   const columns = [
@@ -107,7 +141,9 @@ const PostPage: React.FC = () => {
       <div className='w-full max-w-5xl bg-white p-4 shadow'>
         <div className='flex justify-between items-center mb-4'>
           <div className='text-xl font-bold'>Posts</div>
-          <Button type='primary'>Add Post</Button>
+          <Button type='primary' onClick={() => modalRef.current?.open()}>
+            Add Post
+          </Button>
         </div>
         <Table
           rowKey='id'
@@ -122,6 +158,8 @@ const PostPage: React.FC = () => {
           }}
         />
       </div>
+
+      <PostModal ref={modalRef} onSave={handleSave} onClose={reloadPosts} />
     </div>
   );
 };

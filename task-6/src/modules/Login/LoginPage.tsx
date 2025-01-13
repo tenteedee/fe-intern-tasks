@@ -44,6 +44,7 @@ const LoginPage: React.FC = () => {
     <div className='w-full h-screen flex items-center justify-center'>
       <div className='bg-white p-6 shadow-md rounded-md'>
         <h1 className='text-2xl mb-4 text-center'>Login</h1>
+        <label>Username: </label>
         <Input
           placeholder='Username'
           className='mb-4 min-w-[129px] w-full'

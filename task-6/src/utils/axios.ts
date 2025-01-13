@@ -12,10 +12,14 @@ export const axiosInstance = axios.create({
 let isRefreshing = false;
 let failedRequestQueue: Array<(token: string) => void> = [];
 
-const processQueue = (token: string) => {
-  failedRequestQueue.forEach((callback) => {
-    callback(token);
-  });
+const processQueue = (token: string | null) => {
+  if (token) {
+    failedRequestQueue.forEach((callback) => {
+      callback(token);
+    });
+  } else {
+    failedRequestQueue = [];
+  }
   failedRequestQueue = [];
 };
 
@@ -28,6 +32,7 @@ axiosInstance.interceptors.request.use(
     }
 
     config.headers['Accept'] = 'application/json';
+    //console.log('Request Config:', config); // Kiểm tra cấu hình request
     return config;
   },
   (error: Error) => {
@@ -36,11 +41,13 @@ axiosInstance.interceptors.request.use(
 );
 
 const successHandler = async (response: AxiosResponse) => {
+  //console.log('Response Data:', response.data);
   return response;
 };
 
 const errorHandler = (error: AxiosError) => {
   const resError: AxiosResponse<any> | undefined = error.response;
+  console.error('Response Error:', error.response?.data || error.message);
   return Promise.reject({ ...resError?.data });
 };
 
