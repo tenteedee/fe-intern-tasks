@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { FixedSizeList as List } from 'react-window';
 
 type Post = {
   id: string;
@@ -20,7 +19,7 @@ const serviceGetPost = async (page: number): Promise<ApiResponse> => {
     {
       headers: {
         Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTczNjgyNTI1MCwiZXhwIjoxNzM2OTExNjUwfQ.XnEOYb3hKg1vz2sg8QIHH3kZSYVhnKgzgkGUofhU_s4   ',
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTczNjgzNzE2OCwiZXhwIjoxNzM2OTIzNTY4fQ.B9uwbJCd7dtPTKAMX1jdjZCT9WKo5V7gZgnR_5e2g5k',
       },
     }
   );
@@ -42,69 +41,47 @@ function App() {
         if (data.posts.length === 0 || data.current_page >= data.total_page) {
           setHasMore(false);
         } else {
-          setTimeout(() => {
-            setPosts((prevPosts) => [...prevPosts, ...data.posts]);
-          }, 3000);
+          setPosts((prevPosts) => [...prevPosts, ...data.posts]);
         }
       } finally {
         setLoading(false);
       }
     };
 
-    if (hasMore && !loading) {
+    if (hasMore) {
       fetchData();
     }
-  }, [page, hasMore]);
+  }, [page]);
 
-  const loadMore = () => {
-    if (hasMore && !loading) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
-
-  const Row = ({
-    index,
-    style,
-  }: {
-    index: number;
-    style: React.CSSProperties;
-  }) => {
-    const post = posts[index];
-    if (!post) {
-      return <div style={style}>Loading...</div>;
-    }
-
-    return (
-      <div style={style}>
-        <h2>{post.title}</h2>
-        <p>{post.description}</p>
-        <div>
-          {post.tags.map((tag, i) => (
-            <span key={i}>{typeof tag === 'string' ? tag : tag.tag}</span>
-          ))}
-        </div>
-      </div>
-    );
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight - 100 &&
+        hasMore &&
+        !loading
+      ) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+    console.log(posts);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasMore, loading]);
 
   return (
     <div className='wrap'>
-      <List
-        height={600}
-        itemCount={hasMore ? posts.length + 1 : posts.length}
-        itemSize={150}
-        width={800}
-        onScroll={({ scrollOffset, scrollUpdateWasRequested }) => {
-          if (
-            !scrollUpdateWasRequested &&
-            scrollOffset > (posts.length - 5) * 150
-          ) {
-            loadMore();
-          }
-        }}
-      >
-        {Row}
-      </List>
+      {posts.map((post) => (
+        <div key={post.id}>
+          <h2>{post.title}</h2>
+          <p>{post.description}</p>
+          <div>
+            {post.tags.map((tag, i) => (
+              <span key={i}>{typeof tag === 'string' ? tag : tag.tag}</span>
+            ))}
+          </div>
+        </div>
+      ))}
       {loading && <p>Loading more posts...</p>}
       {!hasMore && !loading && <p>No more posts to load.</p>}
     </div>
