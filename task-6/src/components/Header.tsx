@@ -8,13 +8,14 @@ import { useAtom } from 'jotai';
 
 const Header: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const [user] = useAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
+    setUser(null);
     navigate('/login');
   };
 
