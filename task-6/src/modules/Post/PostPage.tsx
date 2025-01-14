@@ -62,7 +62,7 @@ const PostPage: React.FC = () => {
 
   const columns = [
     {
-      title: t('id'),
+      title: 'id',
       dataIndex: 'id',
       key: 'id',
       width: '15%',

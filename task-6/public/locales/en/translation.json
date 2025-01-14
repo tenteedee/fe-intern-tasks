@@ -10,5 +10,12 @@
   "edit": "Edit",
   "delete": "Delete",
   "cancel": "Cancel",
-  "add": "Add Post"
+  "add": "Add Post",
+  "post-updated-successfully": "Post updated successfully",
+  "post-added-successfully": "Post added successfully",
+  "failed-to-save-post": "Failed to save post",
+  "post-deleted-successfully": "Post deleted successfully",
+  "failed-to-delete-post": "Failed to delete post",
+  "error-loading-posts": "Error loading posts",
+  "unknown-error": "Unknown error"
 }

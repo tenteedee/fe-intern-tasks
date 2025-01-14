@@ -17,6 +17,5 @@
   "post-deleted-successfully": "Bài viết đã được xóa thành công",
   "failed-to-delete-post": "Không thể xóa bài viết",
   "error-loading-posts": "Lỗi khi tải bài viết",
-  "unknown-error": "Lỗi không xác định",
-  "id": "ID"
+  "unknown-error": "Lỗi không xác định"
 }

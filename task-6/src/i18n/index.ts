@@ -9,12 +9,12 @@ i18n
   .use(initReactI18next) // Kết nối với React
   .init({
     fallbackLng: 'en', // Ngôn ngữ mặc định
-    debug: true, // Hiện log trong console để debug
+    debug: true, // Hiện log trong console
     interpolation: {
-      escapeValue: false, // React đã xử lý XSS
+      escapeValue: false, // React xử lý XSS
     },
     backend: {
-      loadPath: '/locales/{{lng}}/translation.json', // Đường dẫn tới file ngôn ngữ
+      loadPath: '/locales/{{lng}}/translation.json',
     },
   });
 
