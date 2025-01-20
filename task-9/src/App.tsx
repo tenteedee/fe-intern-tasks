@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Slide from './components/Slide'; // Import Slide component
 
 const pageColors: Record<number, string> = {
   1: 'bg-blue-500',
@@ -10,28 +11,36 @@ const pageColors: Record<number, string> = {
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-
   const totalPages = Object.keys(pageColors).length;
 
-  const updateBackgroundColor = (page: number): string => {
-    return pageColors[((page - 1) % totalPages) + 1] || 'bg-gray-500';
+  const handlePageChange = (targetPage: number) => {
+    if (targetPage >= 1 && targetPage <= totalPages) {
+      setCurrentPage(targetPage);
+    }
   };
 
-  const handlePrev = (): void =>
-    setCurrentPage((prev) => (prev - 1 < 1 ? prev : prev - 1));
-  const handleNext = (): void =>
-    setCurrentPage((prev) => (prev + 1 > totalPages ? prev : prev + 1));
-  const handlePageClick = (page: number): void => setCurrentPage(page);
+  const handlePrev = () => {
+    handlePageChange(currentPage - 1);
+  };
+
+  const handleNext = () => {
+    handlePageChange(currentPage + 1);
+  };
 
   return (
-    <div
-      className={`w-screen h-screen ${updateBackgroundColor(
-        currentPage
-      )} flex flex-col justify-between`}
-    >
-      <div className='flex justify-center items-center text-white text-6xl h-full'>
-        {currentPage}
+    <div className='w-screen h-screen flex flex-col overflow-hidden'>
+      <div className='relative w-full h-full'>
+        {Object.keys(pageColors).map((page, index) => (
+          <Slide
+            key={page}
+            content={page}
+            color={pageColors[parseInt(page)]}
+            index={index + 1}
+            currentPage={currentPage}
+          />
+        ))}
       </div>
+
       <div className='controls flex justify-center gap-2 pb-5'>
         <button
           className={`px-4 py-2 rounded ${
@@ -52,7 +61,7 @@ const App: React.FC = () => {
                 ? 'bg-gray-800 text-white'
                 : 'bg-gray-300 text-black hover:bg-gray-400'
             }`}
-            onClick={() => handlePageClick(parseInt(page))}
+            onClick={() => handlePageChange(parseInt(page))}
           >
             {page}
           </button>
