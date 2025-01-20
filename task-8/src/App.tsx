@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 type Post = {
   id: string;
@@ -19,7 +19,7 @@ const serviceGetPost = async (page: number): Promise<ApiResponse> => {
     {
       headers: {
         Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTczNjgzNzE2OCwiZXhwIjoxNzM2OTIzNTY4fQ.B9uwbJCd7dtPTKAMX1jdjZCT9WKo5V7gZgnR_5e2g5k',
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTczNjkxNDMyOCwiZXhwIjoxNzM3MDAwNzI4fQ.wH2pT9NP6sSKUliYQd0hEP4_62ERmgfvZR9G3RE8QBE',
       },
     }
   );
@@ -31,6 +31,8 @@ function App() {
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const observerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,34 +56,42 @@ function App() {
   }, [page]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-          document.documentElement.offsetHeight - 100 &&
-        hasMore &&
-        !loading
-      ) {
-        setPage((prevPage) => prevPage + 1);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observer.unobserve(observerRef.current);
       }
     };
-    console.log(posts);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, [hasMore, loading]);
 
   return (
     <div className='wrap'>
       {posts.map((post) => (
-        <div key={post.id}>
+        <div key={post.id} className='post'>
           <h2>{post.title}</h2>
           <p>{post.description}</p>
           <div>
             {post.tags.map((tag, i) => (
-              <span key={i}>{typeof tag === 'string' ? tag : tag.tag}</span>
+              <span key={i} className='tag'>
+                {typeof tag === 'string' ? tag : tag.tag}
+              </span>
             ))}
           </div>
         </div>
       ))}
+      <div ref={observerRef} style={{ height: '1px' }} />
       {loading && <p>Loading more posts...</p>}
       {!hasMore && !loading && <p>No more posts to load.</p>}
     </div>
