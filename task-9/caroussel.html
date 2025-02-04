@@ -3,57 +3,119 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tailwind CSS Slide Carousel</title>
+    <title>Slide Transition</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .slide-container {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+      }
+      .slide {
+        flex: 0 0 100%;
+        height: 100vh;
+      }
+    </style>
   </head>
   <body class="flex flex-col items-center justify-center h-screen bg-gray-100">
-    <!-- Carousel -->
-    <div class="relative w-full max-w-4xl h-2/3 overflow-hidden">
-      <div class="slides flex transition-transform duration-500 ease-in-out">
+    <div class="relative w-full overflow-hidden">
+      <div class="slide-container w-full" id="slideContainer">
         <div
-          class="w-full h-full flex items-center justify-center bg-blue-500 text-white text-6xl font-bold"
+          class="slide bg-blue-500 flex items-center justify-center text-white text-6xl"
         >
           1
         </div>
         <div
-          class="w-full h-full flex items-center justify-center bg-green-500 text-white text-6xl font-bold"
+          class="slide bg-green-500 flex items-center justify-center text-white text-6xl"
         >
           2
         </div>
         <div
-          class="w-full h-full flex items-center justify-center bg-yellow-500 text-white text-6xl font-bold"
+          class="slide bg-yellow-500 flex items-center justify-center text-white text-6xl"
         >
           3
         </div>
         <div
-          class="w-full h-full flex items-center justify-center bg-purple-500 text-white text-6xl font-bold"
+          class="slide bg-purple-500 flex items-center justify-center text-white text-6xl"
         >
           4
         </div>
         <div
-          class="w-full h-full flex items-center justify-center bg-red-500 text-white text-6xl font-bold"
+          class="slide bg-red-500 flex items-center justify-center text-white text-6xl"
         >
           5
         </div>
       </div>
     </div>
 
-    <!-- Controls -->
-    <div class="flex justify-between gap-4 mt-4">
+    <div class="controls flex justify-center gap-2 py-5">
       <button
-        id="prev"
-        class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        id="prevBtn"
+        class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-600"
       >
         Prev
       </button>
+      <div id="pageButtons"></div>
       <button
-        id="next"
-        class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        id="nextBtn"
+        class="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-600"
       >
         Next
       </button>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+      const slideContainer = document.getElementById('slideContainer');
+      const slides = document.querySelectorAll('.slide');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const pageButtonsContainer = document.getElementById('pageButtons');
+
+      let currentPage = 0;
+      const totalPages = slides.length;
+
+      function updateSlidePosition() {
+        slideContainer.style.transform = `translateX(-${currentPage * 100}%)`;
+        updateButtons();
+      }
+
+      function updateButtons() {
+        document.querySelectorAll('.page-btn').forEach((btn, index) => {
+          btn.classList.toggle('bg-gray-800', index === currentPage);
+          btn.classList.toggle('text-white', index === currentPage);
+          btn.classList.toggle('bg-gray-300', index !== currentPage);
+          btn.classList.toggle('hover:bg-gray-400', index !== currentPage);
+          btn.classList.toggle('text-black', index !== currentPage);
+        });
+      }
+
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 0) {
+          currentPage--;
+          updateSlidePosition();
+        }
+      });
+
+      nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages - 1) {
+          currentPage++;
+          updateSlidePosition();
+        }
+      });
+
+      for (let i = 0; i < totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.innerText = i + 1;
+        btn.className =
+          'px-3 py-1 rounded page-btn ' +
+          (i === 0
+            ? 'bg-gray-800 text-white'
+            : 'bg-gray-300 text-black hover:bg-gray-400');
+        btn.addEventListener('click', () => {
+          currentPage = i;
+          updateSlidePosition();
+        });
+        pageButtonsContainer.appendChild(btn);
+      }
+    </script>
   </body>
 </html>
