@@ -19,7 +19,7 @@ const serviceGetPost = async (page: number): Promise<ApiResponse> => {
     {
       headers: {
         Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTczNjkxNDMyOCwiZXhwIjoxNzM3MDAwNzI4fQ.wH2pT9NP6sSKUliYQd0hEP4_62ERmgfvZR9G3RE8QBE',
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTczODY1MTY0NCwiZXhwIjoxNzM4NzM4MDQ0fQ.6gwcLVi2MR8Ys3SsJxrQeGYRUhU5ZBS7MUPBpGbUpmY',
       },
     }
   );
